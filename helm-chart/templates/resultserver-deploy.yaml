@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.resultserver.deploymentName }}
+  labels:
+    app: {{ .Values.resultserver.appName }}
+spec:
+  replicas: {{ .Values.resultserver.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.resultserver.matchLabels }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.resultserver.matchLabels }}
+    spec:
+      containers:
+      - name: {{ .Values.resultserver.containerName }}
+        image: {{ .Values.resultserver.image }}
+        env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.resultserver.secretName }}
+              key: {{ .Values.resultserver.secretKey }}
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.resultserver.configMapName }}
+        ports:
+        - containerPort: {{ .Values.resultserver.containerPort }}

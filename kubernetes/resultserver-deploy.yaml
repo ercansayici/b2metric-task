@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resultserver-deployment
+  namespace: b2metric
+  labels:
+    app: phonebook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phonebook-result
+  template:
+    metadata:
+      labels:
+        app: phonebook-result
+    spec:
+      containers:
+      - name: resultserver
+        image: ercandevops/resultserver:2.1.1
+        env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: servers-secret
+              key: password
+        envFrom:
+        - configMapRef:
+            name: servers-cm     
+        ports:
+        - containerPort: 80

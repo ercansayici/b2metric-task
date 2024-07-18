@@ -1,0 +1,67 @@
+mysql:
+  appName: mysql-deploy
+  deploymentName: mysql-deploy
+  replicaCount: 1
+  image: mysql:5.7
+  containerName: mysql
+  secretName: mysql-secret
+  containerPort: 3306
+  volumeMountPath: /var/lib/mysql
+  volumeName: mysql-pv-storage
+  persistentVolumeClaimName: mysql-pv-claim
+  pvName: mysql-pv-volume
+  pvType: local
+  storageClassName: manual
+  pvStorage: 2Gi
+  accessMode: ReadWriteOnce
+  hostPath: /mnt/data
+  pvcName: mysql-pv-claim
+  pvcStorage: 2Gi
+  secret:
+    database: phonebook
+    password: noeasywayout
+    rootPassword: alliswell
+    user: ercan
+  serviceName: mysql-service
+  servicePort: 3306
+  targetPort: 3306
+
+resultserver:
+  appName: phonebook
+  deploymentName: resultserver-deployment
+  replicaCount: 1
+  matchLabels: phonebook-result
+  containerName: resultserver
+  image: ercandevops/resultserver:2.1.1
+  secretName: servers-secret
+  secretKey: password
+  configMapName: servers-cm
+  containerPort: 80
+  serviceName: resultserver-service
+  selectorApp: phonebook-result
+  servicePort: 80
+  targetPort: 80
+  nodePort: 30002
+  configMap:
+    database: phonebook
+    host: mysql-service
+    user: ercan
+  namespace: default
+  secretPassword: noeasywayout
+
+webserver:
+  appName: phonebook
+  deploymentName: webserver-deployment
+  replicaCount: 1
+  matchLabels: phonebook
+  containerName: webserver
+  image: ercandevops/webserver:2.1.1
+  secretName: servers-secret
+  secretKey: password
+  configMapName: servers-cm
+  containerPort: 80
+  serviceName: webserver-service
+  selectorApp: phonebook
+  servicePort: 80
+  targetPort: 80
+  nodePort: 30001

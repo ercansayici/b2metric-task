@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  MYSQL_DATABASE: {{ .Values.resultserver.configMap.database }}
+  MYSQL_DATABASE_HOST: {{ .Values.resultserver.configMap.host }}
+  MYSQL_USER: {{ .Values.resultserver.configMap.user }}
+kind: ConfigMap
+metadata:
+  name: {{ .Values.resultserver.configMapName }}
+  namespace: {{ .Values.resultserver.namespace }}

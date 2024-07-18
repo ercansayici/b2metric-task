@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver-deployment
+  namespace: b2metric
+  labels:
+    app: phonebook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phonebook
+  template:
+    metadata:
+      labels:
+        app: phonebook
+    spec:
+      containers:
+      - name: webserver
+        image: ercandevops/webserver:2.1.1
+        env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: servers-secret
+              key: password
+        envFrom:
+        - configMapRef:
+            name: servers-cm    
+        ports:
+        - containerPort: 80
